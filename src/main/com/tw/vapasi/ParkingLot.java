@@ -6,25 +6,37 @@ import java.util.List;
 //understands parking space for all types of vehicles
 public class ParkingLot {
     private int noOfSlots;
-    private List<Vehicle> slotList;
+    private List<Parkable> parkedVehicles;
 
     public ParkingLot(int noOfSlots) {
-        slotList = new ArrayList<>();
+        parkedVehicles = new ArrayList<>();
         this.noOfSlots = noOfSlots;
     }
 
-    void park(Vehicle vehicle) throws Exception {
-        if (slotList.size() == noOfSlots) {
-            throw new Exception("Parking Full");
+    void park(Parkable parkable) throws ParkingFullException {
+        if (isSlotNotAvailable()) {
+            throw new ParkingFullException();
         }
-        slotList.add(vehicle);
+        parkedVehicles.add(parkable);
     }
 
-    void unPark(Vehicle vehicle) throws Exception {
-        if (!slotList.contains(vehicle)) {
-            throw new Exception("Cannot UnPark");
+    void unPark(Parkable parkable) throws CannotUnparkException {
+        if (isParkableUnparked(parkable)) {
+            throw new CannotUnparkException();
         }
-        slotList.remove(vehicle);
+        parkedVehicles.remove(parkable);
+    }
+
+    private boolean isSlotNotAvailable() {
+        return parkedVehicles.size() == noOfSlots;
+    }
+
+    private boolean isParkableUnparked(Parkable parkable) {
+        return !parkedVehicles.contains(parkable);
+    }
+
+    boolean isParkableParked(Parkable parkable) {
+        return parkedVehicles.contains(parkable);
     }
 }
 

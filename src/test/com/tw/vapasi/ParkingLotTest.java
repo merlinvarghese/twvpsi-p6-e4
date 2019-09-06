@@ -2,34 +2,56 @@ package com.tw.vapasi;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.annotation.Testable;
 
 class ParkingLotTest {
     @Test
-    void expectParkingSuccessful() throws Exception {
-        ParkingLot obj = new ParkingLot(8);
-        try {
-            obj.park(getVehicle());
-            Assertions.fail("Cleaning in Progress");
-        } catch (ParkException e) {
-            e.printStackTrace();
-        }
+    void expectParkingSuccessful() {
+        ParkingLot parkinglot = new ParkingLot(8);
+        Parkable parkable = getVehicle();
+
+        Assertions.assertDoesNotThrow(() -> parkinglot.park(parkable));
     }
+
     @Test
-    void expectVehicleUnParkSSuccessful() throws Exception {
-        ParkingLot obj = new ParkingLot(8);
-        try {
-            obj.unPark(getVehicle());
+    void expectParkingUnsuccessful(){
+        ParkingLot parkinglot = new ParkingLot(8);
+        Parkable parkable = getVehicle();
 
-        } catch (ParkException e) {
-            e.printStackTrace();
+        Assertions.assertThrows(ParkingFullException.class, () -> parkinglot.park(parkable));
+    }
+
+    @Test
+    void expectToUnParkVehicleSuccessfully() {
+        ParkingLot lot = new ParkingLot(8);
+        Parkable parkable = getVehicle();
+        try {
+            lot.unPark(parkable);
+        } catch (Exception e) {
+            Assertions.fail("Failed");
         }
     }
 
-    private Vehicle getVehicle() {
-        return new Vehicle() {
+    @Test
+    void expectToUnParkVehicleNotParked() {
+        ParkingLot lot = new ParkingLot(8);
+        Parkable parkable = getVehicle();
+
+        Assertions.assertThrows(CannotUnparkException.class, () -> lot.unPark(parkable));
+    }
+
+    @Test
+    void expectTrueIfTheVehicleIsParked() throws ParkingFullException {
+        ParkingLot lot = new ParkingLot(8);
+        Parkable parkable = getVehicle();
+
+        lot.park(parkable);
+        Assertions.assertTrue(lot.isParkableParked(parkable));
+    }
+
+    private Parkable getVehicle() {
+        return new Parkable() {
         };
     }
 
-
 }
+
